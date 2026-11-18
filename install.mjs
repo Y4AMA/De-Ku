@@ -23,6 +23,8 @@ const DEST = join(CFG, 'plugins', 'dekaku');
 const FILES = ['plugin.js', 'dekaku-patterns.mjs', 'dekaku-recover.mjs', 'mcp-server.mjs'];
 const THEME_FILE = 'dekaku-purple.json';
 const THEME_SRC = join(HERE, 'themes', THEME_FILE);
+const AGENT_SRC = join(HERE, 'agents', 'kakdek.md');
+const AGENT_DST = join(CFG, 'agents', 'kakdek.md');
 
 function log(msg) { console.log(`[dekaku] ${msg}`); }
 function ok(msg) { console.log(`  ✓ ${msg}`); }
@@ -125,10 +127,18 @@ function install() {
   }
 
   const wired = wireConfig();
+
+  // Agent: copy kakdek.md into config agents dir
+  if (existsSync(AGENT_SRC)) {
+    mkdirSync(join(CFG, 'agents'), { recursive: true });
+    copyFileSync(AGENT_SRC, AGENT_DST);
+    ok('agent kakdek installed → ' + AGENT_DST);
+  }
+
   ok('files copied → ' + DEST);
   ok(wired ? 'config wired (plugin + MCP + theme)' : 'config already wired');
   ok('theme: ' + (existsSync(join(CFG, 'themes', THEME_FILE)) ? 'dekaku-purple installed' : 'MISSING'));
-  log('restart OpenCode. MCP tool: dekaku_status / dekaku_toggle / dekaku_intercepts / dekaku_learned / dekaku_theme');
+  log('restart OpenCode. Agents: pilih KAKDEK di picker. MCP tool: dekaku_status / dekaku_toggle / dekaku_intercepts / dekaku_learned / dekaku_theme');
   log('toggle: /dekaku off | on (atau file ~/.config/opencode/.dekaku-active)');
   log('audit: ' + join(CFG, 'dekaku-audit.json'));
   log('learned: ' + join(CFG, 'dekaku-learning.json'));
@@ -145,6 +155,7 @@ function doctor() {
   const hasMcp = !!cfg.mcp?.servers?.dekaku;
   ok(hasPlugin ? 'plugin wired' : 'plugin NOT wired');
   ok(hasMcp ? 'mcp wired' : 'mcp NOT wired');
+  ok(existsSync(AGENT_DST) ? 'agent kakdek present' : 'agent kakdek MISSING');
 }
 
 const args = process.argv.slice(2);
