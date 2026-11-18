@@ -18,21 +18,35 @@ Workflow mirror `Suppresor Refusall` — 4 lapis, tapi scoped fluff:
 - Auto-continue tidak pernah memaksa deliverable di atas penolakan asli — guard `HARD_REFUSAL_RE` memblokirnya.
 - Tidak ada gateway, tidak ada license, tidak ada watermark, tidak ada phone-home.
 
-## Instalasi
+## Instalasi — satu perintah
 
 ```bash
 bash install.sh
 ```
 
-Lalu tambahkan di `~/.config/opencode/opencode.jsonc`:
+Installer akan:
+- menyalin `plugin.js`, `dekaku-patterns.mjs`, `dekaku-recover.mjs`, `mcp-server.mjs` ke `~/.config/opencode/plugins/dekaku/`
+- otomatis menulis `opencode.jsonc`: entri `plugin` (V1) + `plugins` (V2) + `mcp.servers.dekaku`
+- idempotent: jalankan ulang aman; `node install.mjs --doctor` untuk cek
 
-```jsonc
-{
-  "plugin": ["~/.config/opencode/plugins/dekaku/plugin.js"]
-}
-```
+Restart OpenCode. Tidak ada langkah manual.
 
-Restart OpenCode.
+## MCP tools
+
+`opencode mcp list` → `dekaku` connected. Tools:
+
+| Tool | Fungsi |
+|---|---|
+| `dekaku_status` | armed? + jumlah learned + jumlah audit |
+| `dekaku_toggle` | on/off (tulis `.dekaku-active`) |
+| `dekaku_intercepts` | N entri audit terakhir |
+| `dekaku_learned` | daftar pola yang dipelajari |
+
+Toggle manual: `echo off > ~/.config/opencode/.dekaku-active`.
+
+## Agen
+
+Tidak ada agent terpisah. Kepribadian = **L1 tone inject** di system prompt — satu sumber kebenaran, tanpa file agent yang bisa konflik. Kalau mau style lain, ubah `TONE_DOCTRINE` di `plugin.js`.
 
 ## Tes
 
@@ -44,8 +58,10 @@ node test-dekaku.mjs
 
 ## Struktur
 
-- `plugin.js` — hook system.transform / messages.transform / text.complete + L3 recovery
+- `plugin.js` — hook system.transform / messages.transform / text.complete + L3 recovery + toggle flag
 - `dekaku-patterns.mjs` — bank pola bobot 1–2 (EN+ID)
 - `dekaku-recover.mjs` — L3 guard + L4 self-learning
-- `test-dekaku.mjs` — self-check
-- `install.sh` — installer
+- `mcp-server.mjs` — MCP stdio (status/toggle/intercepts/learned)
+- `install.mjs` / `install.sh` — installer otomatis (staged copy + wire config)
+- `test-dekaku.mjs`, `test-mcp.mjs` — self-check
+- `README.md` — ini
