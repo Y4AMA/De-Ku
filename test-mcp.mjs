@@ -4,8 +4,10 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import assert from 'node:assert';
+import { rmSync, readFileSync } from 'node:fs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
+rmSync('/tmp/dekaku-test-home', { recursive: true, force: true });
 const server = spawn('node', [join(HERE, 'mcp-server.mjs')], {
   env: { ...process.env, XDG_CONFIG_HOME: '/tmp/dekaku-test-home' },
   stdio: ['pipe', 'pipe', 'inherit'],
@@ -62,5 +64,17 @@ assert.equal(JSON.parse(toggled.result.content[0].text).armed, false);
 const status2 = await send({ jsonrpc: '2.0', id: 5, method: 'tools/call', params: { name: 'dekaku_status', arguments: {} } });
 assert.equal(JSON.parse(status2.result.content[0].text).armed, false);
 
+const themed = await send({ jsonrpc: '2.0', id: 6, method: 'tools/call', params: { name: 'dekaku_theme', arguments: { theme: 'dekaku-purple' } } });
+assert.equal(JSON.parse(themed.result.content[0].text).theme, 'dekaku-purple');
+const cfgAfter = JSON.parse(readFileSync('/tmp/dekaku-test-home/opencode/opencode.jsonc', 'utf8'));
+assert.equal(cfgAfter.theme, 'dekaku-purple');
+
+// theme on empty config {} → valid JSON
+rmSync('/tmp/dekaku-test-home/opencode/opencode.jsonc', { force: true });
+const themedEmpty = await send({ jsonrpc: '2.0', id: 7, method: 'tools/call', params: { name: 'dekaku_theme', arguments: { theme: 'dekaku-purple' } } });
+assert.equal(JSON.parse(themedEmpty.result.content[0].text).theme, 'dekaku-purple');
+const emptyCfg = JSON.parse(readFileSync('/tmp/dekaku-test-home/opencode/opencode.jsonc', 'utf8'));
+assert.equal(emptyCfg.theme, 'dekaku-purple');
+
 server.kill();
-console.log('MCP smoke OK: initialize, tools/list, status, toggle');
+console.log('MCP smoke OK: initialize, tools/list, status, toggle, theme');
