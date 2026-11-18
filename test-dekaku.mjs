@@ -1,6 +1,7 @@
 // Self-check for de-kaku patterns + plugin-adjacent logic.
 // Run: node test-dekaku.mjs
 import assert from 'node:assert';
+import { rmSync } from 'node:fs';
 import { scoreFluff, stripFluff, classify } from './dekaku-patterns.mjs';
 import { shouldRecover, HARD_REFUSAL_RE, loadLearned, learnFromHits } from './dekaku-recover.mjs';
 
@@ -115,6 +116,7 @@ t('hard refusal regex coverage', () => {
 // --- 7. L4 self-learning ---
 t('learning persists new phrase', () => {
   process.env.XDG_CONFIG_HOME = '/tmp/dekaku-test-home';
+  rmSync('/tmp/dekaku-test-home/opencode/dekaku-learning.json', { force: true });
   const added = learnFromHits([{ match: 'semoga harimu menyenangkan' }]);
   assert.equal(added, 1);
   assert.ok(loadLearned().includes('semoga harimu menyenangkan'));
