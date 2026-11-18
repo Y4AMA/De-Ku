@@ -53,6 +53,7 @@ assert.ok(names.includes('dekaku_status'));
 assert.ok(names.includes('dekaku_toggle'));
 assert.ok(names.includes('dekaku_intercepts'));
 assert.ok(names.includes('dekaku_learned'));
+assert.ok(names.includes('dekaku_stats'));
 
 const status1 = await send({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'dekaku_status', arguments: {} } });
 const s1 = JSON.parse(status1.result.content[0].text);
@@ -66,15 +67,18 @@ assert.equal(JSON.parse(status2.result.content[0].text).armed, false);
 
 const themed = await send({ jsonrpc: '2.0', id: 6, method: 'tools/call', params: { name: 'dekaku_theme', arguments: { theme: 'dekaku-purple' } } });
 assert.equal(JSON.parse(themed.result.content[0].text).theme, 'dekaku-purple');
-const cfgAfter = JSON.parse(readFileSync('/tmp/dekaku-test-home/opencode/opencode.jsonc', 'utf8'));
-assert.equal(cfgAfter.theme, 'dekaku-purple');
+const cliAfter = JSON.parse(readFileSync('/tmp/dekaku-test-home/opencode/cli.json', 'utf8'));
+assert.equal(cliAfter.theme.name, 'dekaku-purple');
 
-// theme on empty config {} → valid JSON
-rmSync('/tmp/dekaku-test-home/opencode/opencode.jsonc', { force: true });
+// theme on empty config → valid cli.json
+rmSync('/tmp/dekaku-test-home/opencode/cli.json', { force: true });
 const themedEmpty = await send({ jsonrpc: '2.0', id: 7, method: 'tools/call', params: { name: 'dekaku_theme', arguments: { theme: 'dekaku-purple' } } });
 assert.equal(JSON.parse(themedEmpty.result.content[0].text).theme, 'dekaku-purple');
-const emptyCfg = JSON.parse(readFileSync('/tmp/dekaku-test-home/opencode/opencode.jsonc', 'utf8'));
-assert.equal(emptyCfg.theme, 'dekaku-purple');
+const emptyCli = JSON.parse(readFileSync('/tmp/dekaku-test-home/opencode/cli.json', 'utf8'));
+assert.equal(emptyCli.theme.name, 'dekaku-purple');
+
+const stats = await send({ jsonrpc: '2.0', id: 8, method: 'tools/call', params: { name: 'dekaku_stats', arguments: {} } });
+assert.ok(typeof JSON.parse(stats.result.content[0].text) === 'object');
 
 server.kill();
 console.log('MCP smoke OK: initialize, tools/list, status, toggle, theme');
