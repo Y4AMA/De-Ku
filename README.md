@@ -31,7 +31,14 @@ Installer akan:
 
 Restart OpenCode. Tidak ada langkah manual.
 
-## MCP tools
+## UI/UX — theme ungu 🟣
+
+Theme **dekaku-purple** (dark purple, bukan merah Tiki) otomatis terinstall dan aktif saat install:
+
+- `themes/dekaku-purple.json` — background `#120a1e`, primary `#9b6dff`, secondary `#c9a8ff`
+- Config `"theme": "dekaku-purple"` ditulis installer
+- Ganti via MCP: `dekaku_theme` → `{ theme: "dekaku-purple" }` atau nama lain
+- Restore: `{ theme: "default" }`
 
 `opencode mcp list` → `dekaku` connected. Tools:
 
@@ -41,6 +48,7 @@ Restart OpenCode. Tidak ada langkah manual.
 | `dekaku_toggle` | on/off (tulis `.dekaku-active`) |
 | `dekaku_intercepts` | N entri audit terakhir |
 | `dekaku_learned` | daftar pola yang dipelajari |
+| `dekaku_theme` | ganti theme (default: `dekaku-purple`) |
 
 Toggle manual: `echo off > ~/.config/opencode/.dekaku-active`.
 
@@ -61,7 +69,8 @@ node test-dekaku.mjs
 - `plugin.js` — hook system.transform / messages.transform / text.complete + L3 recovery + toggle flag
 - `dekaku-patterns.mjs` — bank pola bobot 1–2 (EN+ID)
 - `dekaku-recover.mjs` — L3 guard + L4 self-learning
-- `mcp-server.mjs` — MCP stdio (status/toggle/intercepts/learned)
-- `install.mjs` / `install.sh` — installer otomatis (staged copy + wire config)
+- `mcp-server.mjs` — MCP stdio (status/toggle/intercepts/learned/theme)
+- `themes/dekaku-purple.json` — theme ungu
+- `install.mjs` / `install.sh` — installer otomatis (staged copy + wire config + theme)
 - `test-dekaku.mjs`, `test-mcp.mjs` — self-check
 - `README.md` — ini
