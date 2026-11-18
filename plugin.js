@@ -7,7 +7,9 @@
 //  3. text.complete    — strip fluff from finished output (same rule).
 //  4. Audit log — every strip is appended to ~/.config/opencode/dekaku-audit.json
 //     (cap 1000 entries) with the matched patterns and category.
-// No auto-continue, no gateway, no license, no watermark, no agents, no self-heal.
+// Toggle: file ~/.config/opencode/.dekaku-active == 'off' → disabled,
+// otherwise enabled (default on). MCP tool dekaku_toggle writes this flag.
+// No gateway, no license, no watermark, no agents, no self-heal.
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import os from 'node:os';
@@ -24,6 +26,16 @@ function getLearnedRe() {
 }
 function noteLearned(added) {
   if (added > 0) freshLearnedRe();
+}
+
+function cfgDir() {
+  return process.env.OPENCODE_CONFIG_DIR
+    ? process.env.OPENCODE_CONFIG_DIR
+    : process.env.XDG_CONFIG_HOME ? join(process.env.XDG_CONFIG_HOME, 'opencode') : join(os.homedir(), '.config', 'opencode');
+}
+const FLAG = join(cfgDir(), '.dekaku-active');
+function isEnabled() {
+  try { return readFileSync(FLAG, 'utf8').trim() !== 'off'; } catch { return true; }
 }
 
 const AUDIT_CAP = 1000;
@@ -93,6 +105,7 @@ export const DeKakuPlugin = async ({ client, directory } = {}) => {
   void directory;
   return {
     'experimental.chat.system.transform': async (_input, output) => {
+      if (!isEnabled()) return;
       if (!output || !Array.isArray(output.system)) return;
       const line = TONE_DOCTRINE + '\n\n' + FLUFF_GUARD;
       for (let i = 0; i < output.system.length; i++) {
@@ -108,6 +121,7 @@ export const DeKakuPlugin = async ({ client, directory } = {}) => {
     },
 
     'experimental.chat.messages.transform': async (_input, output) => {
+      if (!isEnabled()) return;
       if (!output || !output.messages) return;
       const audit = [];
       for (const msg of output.messages) {
@@ -130,6 +144,7 @@ export const DeKakuPlugin = async ({ client, directory } = {}) => {
     },
 
     'experimental.text.complete': async (input, output) => {
+      if (!isEnabled()) return;
       if (!output || typeof output.text !== 'string') return;
       const raw = output.text;
       const { clean, hits } = stripFluff(raw, { patterns: getLearnedRe() });
