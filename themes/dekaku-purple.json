@@ -1,0 +1,302 @@
+{
+  "$schema": "https://opencode.ai/themes.json",
+  "name": "dekaku-purple",
+  "base": {
+    "background": {
+      "base": "$hue.gray.900",
+      "raised": {
+        "base": "$hue.gray.850",
+        "high": "$hue.gray.800",
+        "max": "$hue.gray.750"
+      },
+      "action": {
+        "primary": {
+          "base": "$hue.purple.500",
+          "$hovered": "$hue.purple.400",
+          "$focused": "$hue.purple.300",
+          "$pressed": "$hue.purple.600",
+          "$disabled": "$hue.gray.700"
+        },
+        "secondary": {
+          "base": "$hue.gray.800",
+          "$hovered": "$hue.gray.750",
+          "$focused": "$hue.purple.600",
+          "$pressed": "$hue.gray.700",
+          "$disabled": "$hue.gray.850"
+        },
+        "destructive": {
+          "base": "$hue.red.500",
+          "$hovered": "$hue.red.400",
+          "$focused": "$hue.red.300",
+          "$pressed": "$hue.red.600",
+          "$disabled": "$hue.gray.700"
+        }
+      },
+      "formfield": {
+        "base": "$hue.gray.800",
+        "$hovered": "$hue.gray.750",
+        "$focused": "$hue.purple.600",
+        "$pressed": "$hue.gray.700",
+        "$disabled": "$hue.gray.850"
+      },
+      "feedback": {
+        "success": {
+          "base": "$hue.green.500",
+          "$hovered": "$hue.green.400"
+        },
+        "warning": {
+          "base": "$hue.orange.400",
+          "$hovered": "$hue.orange.300"
+        },
+        "error": {
+          "base": "$hue.red.500",
+          "$hovered": "$hue.red.400"
+        },
+        "info": {
+          "base": "$hue.blue.400",
+          "$hovered": "$hue.blue.300"
+        }
+      }
+    },
+    "text": {
+      "base": "#ece6fa",
+      "muted": "$hue.gray.400",
+      "faint": "$hue.gray.500",
+      "action": {
+        "primary": {
+          "base": "$hue.purple.300",
+          "$hovered": "$hue.purple.200",
+          "$focused": "$hue.purple.200",
+          "$pressed": "$hue.purple.400",
+          "$disabled": "$hue.gray.600"
+        },
+        "secondary": {
+          "base": "$hue.gray.300",
+          "$hovered": "$hue.gray.200",
+          "$focused": "$hue.purple.300",
+          "$pressed": "$hue.gray.400",
+          "$disabled": "$hue.gray.600"
+        },
+        "destructive": {
+          "base": "$hue.red.300",
+          "$hovered": "$hue.red.200",
+          "$focused": "$hue.red.200",
+          "$pressed": "$hue.red.400",
+          "$disabled": "$hue.gray.600"
+        }
+      },
+      "formfield": {
+        "base": "$hue.gray.200",
+        "$hovered": "$hue.gray.100",
+        "$focused": "$hue.purple.300",
+        "$pressed": "$hue.gray.300",
+        "$disabled": "$hue.gray.600"
+      },
+      "feedback": {
+        "success": {
+          "base": "$hue.green.300",
+          "$hovered": "$hue.green.200"
+        },
+        "warning": {
+          "base": "$hue.orange.300",
+          "$hovered": "$hue.orange.200"
+        },
+        "error": {
+          "base": "$hue.red.300",
+          "$hovered": "$hue.red.200"
+        },
+        "info": {
+          "base": "$hue.blue.300",
+          "$hovered": "$hue.blue.200"
+        }
+      }
+    },
+    "border": {
+      "base": "$hue.gray.800",
+      "strong": "$hue.gray.700",
+      "action": {
+        "primary": {
+          "base": "$hue.purple.600",
+          "$hovered": "$hue.purple.500",
+          "$focused": "$hue.purple.400",
+          "$pressed": "$hue.purple.700",
+          "$disabled": "$hue.gray.800"
+        },
+        "secondary": {
+          "base": "$hue.gray.700",
+          "$hovered": "$hue.gray.600",
+          "$focused": "$hue.purple.600",
+          "$pressed": "$hue.gray.800",
+          "$disabled": "$hue.gray.850"
+        },
+        "destructive": {
+          "base": "$hue.red.600",
+          "$hovered": "$hue.red.500",
+          "$focused": "$hue.red.400",
+          "$pressed": "$hue.red.700",
+          "$disabled": "$hue.gray.800"
+        }
+      },
+      "formfield": {
+        "base": "$hue.gray.700",
+        "$hovered": "$hue.gray.600",
+        "$focused": "$hue.purple.500",
+        "$pressed": "$hue.gray.800",
+        "$disabled": "$hue.gray.850"
+      }
+    },
+    "scrollbar": {
+      "base": "$hue.gray.800",
+      "$hovered": "$hue.gray.700"
+    },
+    "diff": {
+      "text": {
+        "added": "$hue.green.300",
+        "removed": "$hue.red.300",
+        "context": "$hue.gray.400",
+        "highlight": "$hue.purple.300"
+      },
+      "background": {
+        "added": "$hue.green.800",
+        "removed": "$hue.red.800",
+        "context": "$hue.gray.850",
+        "highlight": "$hue.purple.800"
+      },
+      "lineNumber": {
+        "added": "$hue.green.400",
+        "removed": "$hue.red.400",
+        "context": "$hue.gray.500"
+      }
+    },
+    "syntax": {
+      "comment": "$hue.gray.500",
+      "keyword": "$hue.purple.400",
+      "function": "$hue.purple.300",
+      "variable": "#ece6fa",
+      "string": "$hue.green.300",
+      "number": "$hue.orange.300",
+      "type": "$hue.blue.300",
+      "operator": "$hue.gray.400",
+      "punctuation": "$hue.gray.500"
+    },
+    "markdown": {
+      "text": "#ece6fa",
+      "heading": "$hue.purple.300",
+      "link": "$hue.blue.300",
+      "linkText": "$hue.blue.300",
+      "code": "$hue.purple.300",
+      "blockQuote": "$hue.gray.400",
+      "emphasis": "#ece6fa",
+      "strong": "$hue.purple.200",
+      "horizontalRule": "$hue.gray.700",
+      "listItem": "$hue.gray.300",
+      "listEnumeration": "$hue.purple.300",
+      "image": "$hue.gray.400",
+      "imageText": "$hue.gray.500",
+      "codeBlock": "$hue.gray.800"
+    },
+    "categorical": [
+      "accent",
+      "purple",
+      "green",
+      "cyan",
+      "orange",
+      "blue"
+    ]
+  },
+  "dark": {
+    "hue": {
+      "accent": "$hue.purple.500",
+      "interactive": "$hue.purple.400",
+      "neutral": "$hue.gray.400",
+      "gray": {
+        "100": "#f2eefb",
+        "200": "#ded8ea",
+        "300": "#c6bfd6",
+        "400": "#a89bc9",
+        "500": "#8577a8",
+        "600": "#615587",
+        "700": "#453b63",
+        "800": "#2a1f42",
+        "900": "#120a1e"
+      },
+      "purple": {
+        "100": "#f0e9ff",
+        "200": "#ddd0fa",
+        "300": "#c9a8ff",
+        "400": "#b08cfc",
+        "500": "#9b6dff",
+        "600": "#7c4dff",
+        "700": "#6338d6",
+        "800": "#4a2a9e",
+        "900": "#332070"
+      },
+      "red": {
+        "100": "#ffd7e3",
+        "200": "#ffb0c5",
+        "300": "#ff8aa8",
+        "400": "#ff6f95",
+        "500": "#ff5d8f",
+        "600": "#e03f73",
+        "700": "#b02c58",
+        "800": "#7e1f40",
+        "900": "#4d1227"
+      },
+      "orange": {
+        "100": "#fff0d6",
+        "200": "#ffe1a8",
+        "300": "#ffd17a",
+        "400": "#ffc46b",
+        "500": "#f5a94a",
+        "600": "#d9852f",
+        "700": "#ad6220",
+        "800": "#7d4315",
+        "900": "#4d270c"
+      },
+      "yellow": {
+        "100": "#fff9d6",
+        "200": "#fff1a8",
+        "300": "#ffe97a",
+        "400": "#ffdd55",
+        "500": "#eec63a",
+        "600": "#c9a42b",
+        "700": "#9c7c1e",
+        "800": "#6e5513",
+        "900": "#40320b"
+      },
+      "green": {
+        "100": "#d9f8e6",
+        "200": "#b3f1cd",
+        "300": "#8deab4",
+        "400": "#7ee2a8",
+        "500": "#5cc98a",
+        "600": "#43a56c",
+        "700": "#317c50",
+        "800": "#205437",
+        "900": "#12301f"
+      },
+      "cyan": {
+        "100": "#d6f6fb",
+        "200": "#a8ecf5",
+        "300": "#7adff0",
+        "400": "#59cfe3",
+        "500": "#3fb2c9",
+        "600": "#2f8ba0",
+        "700": "#226674",
+        "800": "#16444e",
+        "900": "#0c282e"
+      },
+      "blue": {
+        "100": "#dcebfe",
+        "200": "#b8d7fd",
+        "300": "#94c2fb",
+        "400": "#8ab4ff",
+        "500": "#6a97f2",
+        "600": "#4f75cc",
+        "700": "#3a56a0",
+        "800": "#273a6e",
+        "900": "#162040"
+      }
+    }
+  }
+}
