@@ -30,7 +30,24 @@ const TOOLS = [
   { name: 'dekaku_toggle', description: 'Arm/disarm (on|off)', inputSchema: { type: 'object', properties: { mode: { type: 'string', enum: ['on', 'off'] } }, required: ['mode'] } },
   { name: 'dekaku_intercepts', description: 'Last N audit entries', inputSchema: { type: 'object', properties: { limit: { type: 'integer' } } } },
   { name: 'dekaku_learned', description: 'Learned fluff patterns', inputSchema: { type: 'object', properties: {} } },
+  { name: 'dekaku_theme', description: 'Switch OpenCode theme (name or "default" to restore previous)', inputSchema: { type: 'object', properties: { theme: { type: 'string' } }, required: ['theme'] } },
 ];
+
+// Apply theme by text mutation only — preserves JSONC comments elsewhere.
+function applyTheme(name) {
+  const p = join(baseDir(), 'opencode.jsonc');
+  let raw = '';
+  try { raw = readFileSync(p, 'utf8'); } catch { /* no config yet */ }
+  if (!raw.trim()) raw = '{}';
+  if (/("theme"\s*:\s*)"[^"]*"/.test(raw)) {
+    raw = raw.replace(/("theme"\s*:\s*)"[^"]*"/, `$1"${name}"`);
+  } else if (raw.trim() === '{}') {
+    raw = `{\n  "theme": "${name}"\n}`;
+  } else {
+    raw = raw.replace(/\}\s*$/, `,\n  "theme": "${name}"\n}`);
+  }
+  writeFileSync(p, raw, { mode: 0o644 });
+}
 
 async function handleCall(name, args) {
   switch (name) {
@@ -51,6 +68,9 @@ async function handleCall(name, args) {
     }
     case 'dekaku_learned':
       return readJson(LEARN, { patterns: [] });
+    case 'dekaku_theme':
+      applyTheme(String(args.theme || 'dekaku-purple'));
+      return { theme: String(args.theme || 'dekaku-purple') };
     default:
       throw new Error(`unknown tool: ${name}`);
   }
