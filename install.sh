@@ -8,8 +8,8 @@ DEST="$CFG/plugins/dekaku"
 
 mkdir -p "$DEST"
 
-cp "$SRC/plugin.js" "$SRC/dekaku-patterns.mjs" "$DEST/"
-chmod 644 "$DEST/plugin.js" "$DEST/dekaku-patterns.mjs"
+cp "$SRC/plugin.js" "$SRC/dekaku-patterns.mjs" "$SRC/dekaku-recover.mjs" "$DEST/"
+chmod 644 "$DEST/plugin.js" "$DEST/dekaku-patterns.mjs" "$DEST/dekaku-recover.mjs"
 
 echo "de-kaku → $DEST"
 echo ""
