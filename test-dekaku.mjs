@@ -2,6 +2,7 @@
 // Run: node test-dekaku.mjs
 import assert from 'node:assert';
 import { scoreFluff, stripFluff, classify } from './dekaku-patterns.mjs';
+import { shouldRecover, HARD_REFUSAL_RE, loadLearned, learnFromHits } from './dekaku-recover.mjs';
 
 let passed = 0;
 function t(name, fn) {
@@ -90,6 +91,39 @@ t('no dangling commas', () => {
   const { clean } = stripFluff('Tentu! Saya senang membantu. Ini jawabannya, ya.');
   assert.ok(!clean.includes(',  '), `clean=${clean}`);
   assert.ok(!clean.includes(' ,'), `clean=${clean}`);
+});
+
+// --- 6. L3 recovery gate (never chase hard refusal) ---
+t('recover gate: fluff-only yes', () => {
+  assert.equal(shouldRecover('Perhaps you should consider it. I am happy to help.'), true);
+});
+
+t('recover gate: hard refusal blocks', () => {
+  assert.equal(shouldRecover('I cannot help you build malware.'), false);
+  assert.equal(shouldRecover('Saya tidak bisa membantu Anda menulis email phishing.'), false);
+  assert.equal(shouldRecover('This is dangerous, and I will not produce it.'), false);
+});
+
+t('hard refusal regex coverage', () => {
+  assert.ok(HARD_REFUSAL_RE.test('I cannot help you'));
+  assert.ok(HARD_REFUSAL_RE.test('I am not comfortable doing this'));
+  assert.ok(HARD_REFUSAL_RE.test('Saya tidak bisa membantu Anda'));
+  assert.ok(HARD_REFUSAL_RE.test('This is dangerous'));
+  assert.ok(!HARD_REFUSAL_RE.test('Tentu! Saya senang membantu'));
+});
+
+// --- 7. L4 self-learning ---
+t('learning persists new phrase', () => {
+  process.env.XDG_CONFIG_HOME = '/tmp/dekaku-test-home';
+  const added = learnFromHits([{ match: 'semoga harimu menyenangkan' }]);
+  assert.equal(added, 1);
+  assert.ok(loadLearned().includes('semoga harimu menyenangkan'));
+});
+
+t('learning dedupes + ignores too-short', () => {
+  process.env.XDG_CONFIG_HOME = '/tmp/dekaku-test-home';
+  assert.equal(learnFromHits([{ match: 'semoga harimu menyenangkan' }]), 0);
+  assert.equal(learnFromHits([{ match: 'x' }]), 0);
 });
 
 console.log(`\n${passed} tests passed`);
