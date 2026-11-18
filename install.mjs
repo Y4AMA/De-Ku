@@ -21,6 +21,8 @@ const CFG = configDir();
 const DEST = join(CFG, 'plugins', 'dekaku');
 
 const FILES = ['plugin.js', 'dekaku-patterns.mjs', 'dekaku-recover.mjs', 'mcp-server.mjs'];
+const THEME_FILE = 'dekaku-purple.json';
+const THEME_SRC = join(HERE, 'themes', THEME_FILE);
 
 function log(msg) { console.log(`[dekaku] ${msg}`); }
 function ok(msg) { console.log(`  ✓ ${msg}`); }
@@ -81,6 +83,17 @@ function wireConfig() {
   }
   cfg.mcp.dekaku = cfg.mcp.dekaku || { command: 'node', args: [join(DEST, 'mcp-server.mjs')] };
 
+  // Theme: copy wholesale + set if unset
+  const themeDest = join(CFG, 'themes', THEME_FILE);
+  if (existsSync(THEME_SRC)) {
+    mkdirSync(join(CFG, 'themes'), { recursive: true });
+    copyFileSync(THEME_SRC, themeDest);
+    if (!cfg.theme || cfg.theme === 'opencode') {
+      cfg.theme = 'dekaku-purple';
+      changed = true;
+    }
+  }
+
   if (changed) writeConfig(cfg);
   return changed;
 }
@@ -113,8 +126,9 @@ function install() {
 
   const wired = wireConfig();
   ok('files copied → ' + DEST);
-  ok(wired ? 'config wired (plugin + MCP)' : 'config already wired');
-  log('restart OpenCode. MCP tool: dekaku_status / dekaku_toggle / dekaku_intercepts / dekaku_learned');
+  ok(wired ? 'config wired (plugin + MCP + theme)' : 'config already wired');
+  ok('theme: ' + (existsSync(join(CFG, 'themes', THEME_FILE)) ? 'dekaku-purple installed' : 'MISSING'));
+  log('restart OpenCode. MCP tool: dekaku_status / dekaku_toggle / dekaku_intercepts / dekaku_learned / dekaku_theme');
   log('toggle: /dekaku off | on (atau file ~/.config/opencode/.dekaku-active)');
   log('audit: ' + join(CFG, 'dekaku-audit.json'));
   log('learned: ' + join(CFG, 'dekaku-learning.json'));
