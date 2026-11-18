@@ -57,6 +57,20 @@ function appendAudit(entries) {
   } catch { /* audit is best-effort */ }
 }
 
+// ---- usage stats (fluff strips vs permission asks) ----
+const STATS_PATH = join(os.homedir(), '.config', 'opencode', 'dekaku-stats.json');
+function readStats() {
+  try { return JSON.parse(readFileSync(STATS_PATH, 'utf8')); } catch { return {}; }
+}
+function bumpStats(delta) {
+  try {
+    const s = readStats();
+    for (const [k, v] of Object.entries(delta)) s[k] = (s[k] || 0) + v;
+    mkdirSync(join(STATS_PATH, '..'), { recursive: true });
+    writeFileSync(STATS_PATH, JSON.stringify(s, null, 2), { mode: 0o600 });
+  } catch { /* best-effort */ }
+}
+
 // ---- L3: auto-continue (mirrors Suppresor, scoped to fluff only) ----
 const recovery = { handled: new Set(), lastFire: new Map(), count: new Map() };
 const RECOVERY_COOLDOWN_MS = 20000;
@@ -137,6 +151,7 @@ export const DeKakuPlugin = async ({ client, directory } = {}) => {
             }
             part.text = clean;
             noteLearned(learnFromHits(hits));
+            bumpStats({ strips_context: hits.length });
           }
         }
       }
@@ -153,8 +168,20 @@ export const DeKakuPlugin = async ({ client, directory } = {}) => {
         appendAudit(audit);
         output.text = clean && clean.trim() ? clean : ' ';
         noteLearned(learnFromHits(hits));
+        bumpStats({ strips_output: hits.length });
         await maybeRecover(client, input?.sessionID, raw);
       }
+    },
+
+    // ---- permission hook: log asks (read-only, never decides) ----
+    'permission.ask': async (input, output) => {
+      if (!isEnabled()) return;
+      try {
+        const tool = input?.tool ?? input?.action ?? 'unknown';
+        const desc = (input?.description || '').slice(0, 120);
+        appendAudit([{ ts: new Date().toISOString(), layer: 'permission', category: 'permission', weight: 0, match: `${tool} :: ${desc}` }]);
+        bumpStats({ permission_asks: 1 });
+      } catch { /* best-effort */ }
     },
   };
 };
