@@ -96,6 +96,15 @@ function wireConfig() {
     }
   }
 
+  // cli.json theme (v2 client prefers this)
+  const cliPath = join(CFG, 'cli.json');
+  let cli = {};
+  try { cli = JSON.parse(readFileSync(cliPath, 'utf8')); } catch { cli = {}; }
+  if (!cli.theme || !cli.theme.name || cli.theme.name === 'opencode') {
+    cli.theme = { name: 'dekaku-purple', mode: 'dark' };
+    writeFileSync(cliPath, JSON.stringify(cli, null, 2), { mode: 0o644 });
+  }
+
   if (changed) writeConfig(cfg);
   return changed;
 }
@@ -133,6 +142,16 @@ function install() {
     mkdirSync(join(CFG, 'agents'), { recursive: true });
     copyFileSync(AGENT_SRC, AGENT_DST);
     ok('agent kakdek installed → ' + AGENT_DST);
+  }
+
+  // default_agent → kakdek (only when unset/unknown)
+  {
+    const c = readConfig();
+    if (!c?.default_agent || !existsSync(join(CFG, 'agents', c.default_agent + '.md'))) {
+      c.default_agent = 'kakdek';
+      writeConfig(c);
+      ok('default_agent → kakdek');
+    }
   }
 
   ok('files copied → ' + DEST);
